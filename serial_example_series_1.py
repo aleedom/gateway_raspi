@@ -1,6 +1,6 @@
 #! /usr/bin/python
 
-from xbee import XBee
+from xbee import xbee
 import serial
 
 """
@@ -19,42 +19,42 @@ def main():
     try:
         
         # Open serial port
-        ser = serial.Serial('/dev/tts/0', 9600)
+        ser = serial.Serial('/dev/ttyUSB0', 9600)
         
         # Create XBee Series 1 object
-        xbee = XBee(ser)
+        xbe = xbee(ser)
         
         
         # Send AT packet
-        x = xbee.send('at', frame_id='A', command='DH')
+        x = xbe.send('at', frame_id='A', command='DH')
         print x
         
         # Wait for response
-        response = xbee.wait_read_frame()
+        response = xbe.wait_read_frame()
         print response
         
         # Send AT packet
-        x = xbee.send('at', frame_id='B', command='DL')        
+        x = xbe.send('at', frame_id='B', command='DL')        
         print x
 
         # Wait for response
-        response = xbee.wait_read_frame()
+        response = xbe.wait_read_frame()
         print response
         
         # Send AT packet
-        x = xbee.send('at', frame_id='C', command='MY')
+        x = xbe.send('at', frame_id='C', command='MY')
         print x
         
         # Wait for response
-        response = xbee.wait_read_frame()
+        response = xbe.wait_read_frame()
         print response
         
         # Send AT packet
-        x = xbee.send('at', frame_id='D', command='CE')
+        x = xbe.send('at', frame_id='D', command='CE')
         print x
         
         # Wait for response
-        response = xbee.wait_read_frame()
+        response = xbe.wait_read_frame()
         print response
     except KeyboardInterrupt:
         pass

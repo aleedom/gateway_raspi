@@ -1,11 +1,29 @@
 from xbee import xbee
 import serial
 import math
+import time
 
 # cd Downloads\TweetAWatt\PyScripts
 # python temp1.py
 
-SERIALPORT = "/dev/tts/0"    # the com/serial port the XBee is connected to
+def toHex(s):
+	lst = []
+	for ch in s:
+		hv = hex(ord(ch)).replace('0x', '')
+		if len(hv) == 1:
+			hv - '0'+hv
+		hv = '0x' + hv
+		lst.append(hv)
+
+def decodeReceivedFrame(data):
+	source_addr_long = toHex(data['source_addr_long'])
+	source_addr = toHex(data['source_addr'])
+	id = data['id']
+	samples = data['samples']
+	options = toHex(data['options'])
+	return [source_addr_long, source_addr, id, samples]
+
+SERIALPORT = "/dev/ttyUSB0"    # the com/serial port the XBee is connected to
 BAUDRATE = 9600      # the baud rate we talk to the xbee
 
 print "we set the ports"
@@ -24,18 +42,19 @@ while True:
     # packet = xbee.find_packet(ser)
 
     try:
-        packet = xbee.find_packet(ser)
-        if not packet:
-            print "    no serial packet found... "+ time.strftime("%Y %m %d, %H:%M")
-            continue
+		packet = xbee.find_packet(ser)
+		if not packet:
+			print "    no serial packet found... "+ time.strftime("%Y %m %d, %H:%M")
+			continue
 
     except Exception, e:
         print "TLSM.mainloop exception: Serial packet: "+str(e)
         continue
 
 
-    # print 'got the packet'
+    print 'got the packet'
     if packet:
+        print(type(packet))
         # xb = xbee(packet)
         try:
             xb = xbee(packet)    # parse the packet
